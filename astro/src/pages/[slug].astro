@@ -1,0 +1,49 @@
+---
+import Section from '../sections/Section.astro';
+import { pageQuery, allPagesQuery } from '../lib/queries';
+import { client } from '../../sanity';
+import Layout from '../layouts/Layout.astro';
+
+interface PageSection {
+  order: number;
+  [key: string]: any;
+}
+
+export async function getStaticPaths() {
+  const pages = await client.fetch(allPagesQuery);
+  console.log('Available pages:', pages);
+  
+  return pages
+    .filter((page: { isHomePage: boolean }) => !page.isHomePage)
+    .map((page: { slug: string }) => {
+      console.log('Creating route for:', page.slug);
+      return {
+        params: { slug: page.slug },
+        props: { slug: page.slug }
+      };
+    });
+}
+
+const { slug } = Astro.params;
+console.log('Rendering page for slug:', slug);
+
+let page;
+try {
+  page = await client.fetch(pageQuery, { slug });
+  console.log('Found page data:', page);
+  
+  if (!page) {
+    console.log('No page found for slug:', slug);
+    return Astro.redirect('/404');
+  }
+} catch (error) {
+  console.error('Error fetching page:', error);
+  return Astro.redirect('/404');
+}
+---
+
+<Layout title={page.title}>
+  {page.sections?.sort((a: PageSection, b: PageSection) => a.order - b.order).map((section: PageSection) => (
+    <Section section={section} />
+  ))}
+</Layout>

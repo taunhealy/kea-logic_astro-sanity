@@ -1,0 +1,31 @@
+---
+import { pageQuery } from '../lib/queries';
+import { client } from '../../sanity';
+import Layout from '../layouts/Layout.astro';
+import Section from '../sections/Section.astro';
+
+interface PageSection {
+  order: number;
+  [key: string]: any;
+}
+
+let page;
+try {
+  page = await client.fetch(pageQuery, { slug: 'home' });
+  console.log('Page data:', page);
+} catch (error) {
+  console.error('Sanity query error:', error);
+  return Astro.redirect('/404');
+}
+
+if (!page) {
+  return Astro.redirect('/404');
+}
+---
+
+<Layout title={page.title}>
+    {page.sections?.sort((a: PageSection, b: PageSection) => a.order - b.order).map((section: PageSection) => {
+        console.log('Rendering section:', section);
+        return <Section section={section} />;
+    })}
+</Layout>

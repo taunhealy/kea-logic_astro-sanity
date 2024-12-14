@@ -1,0 +1,25 @@
+---
+
+import HeroWork from './HeroWork.astro';
+import Testimonials from './Testimonials.astro';
+import Blog from './Blog.astro';
+import Hero from './Hero.astro';
+import Process from './Process.astro';
+import HeroVideo from './HeroVideo.astro';
+import HeroImage from './HeroImage.astro';
+
+const sectionTypes = {
+  heroSection: Hero,
+  workSection: HeroWork,
+  testimonialSection: Testimonials,
+  blogSection: Blog,
+  processSection: Process,
+  workVideoFullScreenSection: HeroVideo,
+  imageFullScreenSection: HeroImage
+};
+
+const { section } = Astro.props;
+const Component = sectionTypes[section._type as keyof typeof sectionTypes];
+---
+
+{Component && <Component {...section} />}

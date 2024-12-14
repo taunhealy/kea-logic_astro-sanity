@@ -1,0 +1,36 @@
+---
+import { PortableText } from 'astro-portabletext';
+
+interface Testimonial {
+    content: string;
+    author: string;
+    role: string;
+    avatar: { url: string };
+  }
+
+const { content, testimonials } = Astro.props;
+---
+
+
+
+<section class="testimonials">
+  <div class="container">
+    {content && <PortableText value={content} />}
+    
+    <div class="testimonials-grid">
+
+      {testimonials?.map((testimonial: Testimonial) => (
+        <div class="testimonial">
+          <div class="content">{testimonial.content}</div>
+          <div class="author">
+            <img src={testimonial.avatar.url} alt={testimonial.author} />
+            <div>
+              <h4>{testimonial.author}</h4>
+              <p>{testimonial.role}</p>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

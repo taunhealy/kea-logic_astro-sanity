@@ -1,0 +1,45 @@
+---
+import { client } from '../../sanity';
+
+// Fetch process steps from Sanity
+const processes = await client.fetch(`
+  *[_type == "process"] | order(stepNumber asc) {
+    title,
+    description,
+    stepNumber,
+    icon,
+    color
+  }
+`);
+---
+
+<section class="py-16 bg-white">
+  <div class="container mx-auto px-4">
+    <h4 class="text-center text-3xl font-bold mb-12">Our Process</h4>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
+      {processes.map((process: any) => (
+        <div class="flex flex-col items-center text-center">
+          {process.icon && (
+            <div 
+              class="w-16 h-16 mb-4 flex items-center justify-center rounded-full" 
+              style={`background-color: ${process.color}`}
+            >
+              <img
+                src={process.icon.asset.url}
+                alt={process.title}
+                class="w-8 h-8"
+              />
+            </div>
+          )}
+          <h3 class="text-[21px] font-medium mb-2 font-['Inter']">{process.title}</h3>
+          <p class="text-gray-600">{process.description}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+</style>
