@@ -1,15 +1,26 @@
 ---
 	import HeaderLink from '../components/HeaderLink.astro';
 	import { SITE_TITLE } from '../consts';
+	import { client } from '../../sanity';
+
+	// Fetch all pages for navigation
+	const pages = await client.fetch(`*[_type == "page" && defined(slug.current)] | order(orderRank) {
+		title,
+		"slug": slug.current
+	}`);
 ---
 
 <header>
 	<nav>
 		<h2><a href="/">{SITE_TITLE}</a></h2>
 		<div class="internal-links">
-			<HeaderLink href="/">Home</HeaderLink>
-			<HeaderLink href="/blog">Blog</HeaderLink>
-			<HeaderLink href="/about">About</HeaderLink>
+			{
+				pages.map((page: { title: string; slug: string }) => (
+					<HeaderLink href={page.slug === 'home' ? '/' : `/${page.slug}`}>
+						{page.title}
+					</HeaderLink>
+				))
+			}
 		</div>
 		<div class="social-links">
 			<a href="https://m.webtoo.ls/@astro" target="_blank">
