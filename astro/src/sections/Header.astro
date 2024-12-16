@@ -2,6 +2,7 @@
 import HeaderLink from '../components/HeaderLink.astro';
 
 import { client } from '../../sanity';
+import Button from '../components/Button';
 
 // Fetch all pages for navigation
 const pages = await client.fetch(`*[_type == "page" && defined(slug.current)] | order(orderRank) {
@@ -10,13 +11,14 @@ const pages = await client.fetch(`*[_type == "page" && defined(slug.current)] | 
 }`);
 ---
 
-<header class="fixed w-full bg-black/80 backdrop-blur-md z-50 py-[16px]">
-	<nav class="container mx-auto px-4 py-4">
-		<div class="flex items-center justify-between">
+<header class="fixed w-full bg-black backdrop-blur-md z-50">
+	<nav class="px-[32px]">
+		<div class="flex items-center justify-between h-[90px]">
 			<!-- Logo/Site Title -->
 			
 
 			<!-- Navigation Links -->
+	
 			<div class="hidden md:flex items-center space-x-8">
 				{
 					pages.map((page: { title: string; slug: string }) => (
@@ -28,14 +30,15 @@ const pages = await client.fetch(`*[_type == "page" && defined(slug.current)] | 
 						</HeaderLink>
 					))
 				}
+				
+			</div>
+			<Button client:load variant="primary">
+				Contact
+			</Button>
 			</div>
 
 			<!-- Mobile Menu Button -->
-			<button class="md:hidden text-white" id="mobile-menu-button">
-				<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-				</svg>
-			</button>
+		
 		</div>
 
 		<!-- Mobile Menu -->
@@ -51,6 +54,9 @@ const pages = await client.fetch(`*[_type == "page" && defined(slug.current)] | 
 						</HeaderLink>
 					))
 				}
+				<Button client:load variant="primary">
+					Contact Us
+				</Button>
 			</div>
 		</div>
 	</nav>

@@ -22,12 +22,14 @@ interface Props {
 const { heroImage, heroVideo, heroTitle, heroSubtitle, heroLogos } = Astro.props;
 ---
 
-<section class="bg-black flex flex-col min-h-screen">
-  <div class="container min-w-[100vw] min-h-[50vh] flex items-center">
-    <div class="titles-container pl-[10%] flex flex-col gap-3">
-      <h1 class="text-white">Hello World</h1>
-      <h2 class="text-white">Hello Computer</h2>
-      <h3 class="text-white">Hello Everyone</h3>
+<section class="hero bg-black flex flex-col h-[calc(100vh-90px)]">
+  <div class="section-padding flex flex-col items-left py-[0px] gap-[90px]">
+    <div class="titles-container flex flex-col gap-[16px] max-w-[540px] h-full">
+      <h4 class="text-white">Kea Logic</h4>
+      <h1 class="text-white">Creating fast and minimal content websites.</h1>
+    </div>
+    <div class="beam min-h-[20vh]">
+      <h1>beams</h1>
     </div>
   </div>
 </section>

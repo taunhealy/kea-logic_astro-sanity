@@ -18,9 +18,13 @@ const { title, description = '' } = Astro.props;
   </head>
   <body>
     <Header />
-    <main>
+    <main class="main-content pt-[90px]">
       <slot />
     </main>
     <Footer />
   </body>
 </html>
+
+<style>
+  /* Remove the margin-top style completely */
+</style>

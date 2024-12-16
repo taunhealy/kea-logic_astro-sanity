@@ -6,11 +6,12 @@ export default {
     // define typography tokens and then use tokens via global.css
       fontFamily: {
         primary: ['Inter', 'sans-serif'],
+        secondary: 'Inria Sans',
       },
       colors: {
-        primary: '#121923',    // Dark text color
-        secondary: '#FFFFFF',  // White text color
-        tertiary: '#3B82F6',  // Blue accent color
+        primary: '#FFFFFF',
+        secondary: '#121923',
+        tertiary: '#3B82F6',
       },
     },
   },
