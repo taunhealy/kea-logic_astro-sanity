@@ -10,7 +10,7 @@ const pages = await client.fetch(`*[_type == "page" && defined(slug.current)] | 
 }`);
 ---
 
-<header class="fixed w-full bg-white/80 backdrop-blur-md z-50 border-b border-gray-100">
+<header class="fixed w-full bg-black/80 backdrop-blur-md z-50 py-[16px]">
 	<nav class="container mx-auto px-4 py-4">
 		<div class="flex items-center justify-between">
 			<!-- Logo/Site Title -->
@@ -22,7 +22,7 @@ const pages = await client.fetch(`*[_type == "page" && defined(slug.current)] | 
 					pages.map((page: { title: string; slug: string }) => (
 						<HeaderLink 
 							href={page.slug === 'home' ? '/' : `/${page.slug}`}
-							class="text-gray-600 hover:text-gray-900 transition-colors"
+							class="text-white"
 						>
 							{page.title}
 						</HeaderLink>
@@ -31,7 +31,7 @@ const pages = await client.fetch(`*[_type == "page" && defined(slug.current)] | 
 			</div>
 
 			<!-- Mobile Menu Button -->
-			<button class="md:hidden" id="mobile-menu-button">
+			<button class="md:hidden text-white" id="mobile-menu-button">
 				<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
 				</svg>
@@ -45,7 +45,7 @@ const pages = await client.fetch(`*[_type == "page" && defined(slug.current)] | 
 					pages.map((page: { title: string; slug: string }) => (
 						<HeaderLink 
 							href={page.slug === 'home' ? '/' : `/${page.slug}`}
-							class="block px-4 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors"
+							class="block px-4 py-2"
 						>
 							{page.title}
 						</HeaderLink>
