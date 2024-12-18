@@ -1,0 +1,27 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import { urlForImage } from '../lib/urlForImage';
+import { SITE_TITLE } from '../constants';
+import { gsap } from 'gsap';
+
+interface Props {
+  heroImage?: {
+    asset: {
+      _ref: string;
+    };
+  };
+  heroVideo?: string;
+  heroTitle?: string;
+  heroSubtitle?: string;
+  heroLogos?: Array<{
+    asset: {
+      _ref: string;
+    };
+  }>;
+}
+
+const { heroImage, heroVideo, heroTitle, heroSubtitle, heroLogos } = Astro.props;
+---
+<section class="hero bg-black flex flex-col h-[100vh] w-screen relative overflow-hidden">
+  <!-- Add your other hero content here -->
+</section>

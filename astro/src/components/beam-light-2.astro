@@ -1,0 +1,78 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import { urlForImage } from '../lib/urlForImage';
+import { SITE_TITLE } from '../constants';
+import { gsap } from 'gsap';
+
+interface Props {
+  heroImage?: {
+    asset: {
+      _ref: string;
+    };
+  };
+  heroVideo?: string;
+  heroTitle?: string;
+  heroSubtitle?: string;
+  heroLogos?: Array<{
+    asset: {
+      _ref: string;
+    };
+  }>;
+}
+
+// extracting the properties from Sanity database so we can use them in the Hero component
+const { heroImage, heroVideo, heroTitle, heroSubtitle, heroLogos } = Astro.props;
+---
+<section class="hero bg-black flex flex-col h-[100vh] w-screen relative overflow-hidden">
+  <div class="beams-container absolute inset-0">
+    <!-- Left to Right beams -->
+    <div class="beam-purple absolute h-[12px] w-[160px] bg-purple-500/90 rounded-full animate-snake-lr mix-blend-screen blur-[2px] shadow-lg shadow-purple-500/50"></div>
+    <div class="beam-green absolute h-[12px] w-[160px] bg-green-400/90 rounded-full animate-snake-lr delay-500 mix-blend-screen blur-[2px] shadow-lg shadow-green-400/50"></div>
+    <div class="beam-orange absolute h-[12px] w-[160px] bg-orange-400/90 rounded-full animate-snake-lr delay-1000 mix-blend-screen blur-[2px] shadow-lg shadow-orange-400/50"></div>
+    <div class="beam-purple absolute h-[12px] w-[160px] bg-purple-400/90 rounded-full animate-snake-lr delay-1500 mix-blend-screen blur-[2px] shadow-lg shadow-purple-400/50"></div>
+    <div class="beam-green absolute h-[12px] w-[160px] bg-green-400/90 rounded-full animate-snake-lr delay-2000 mix-blend-screen blur-[2px] shadow-lg shadow-green-400/50"></div>
+    
+    <!-- Right to Left beams (mirrored) -->
+    <div class="beam-purple absolute h-[12px] w-[160px] bg-purple-500/90 rounded-full animate-snake-rl mix-blend-screen blur-[2px] shadow-lg shadow-purple-500/50"></div>
+    <div class="beam-green absolute h-[12px] w-[160px] bg-green-400/90 rounded-full animate-snake-rl delay-500 mix-blend-screen blur-[2px] shadow-lg shadow-green-400/50"></div>
+    <div class="beam-orange absolute h-[12px] w-[160px] bg-orange-400/90 rounded-full animate-snake-rl delay-1000 mix-blend-screen blur-[2px] shadow-lg shadow-orange-400/50"></div>
+    <div class="beam-purple absolute h-[12px] w-[160px] bg-purple-400/90 rounded-full animate-snake-rl delay-1500 mix-blend-screen blur-[2px] shadow-lg shadow-purple-400/50"></div>
+    <div class="beam-green absolute h-[12px] w-[160px] bg-green-400/90 rounded-full animate-snake-rl delay-2000 mix-blend-screen blur-[2px] shadow-lg shadow-green-400/50"></div>
+  </div>
+</section>
+
+<style>
+  @keyframes snake-lr {
+    0% { transform: translate(-160px, 40px); }
+    100% { transform: translate(100vw, 40px); }
+  }
+
+  @keyframes snake-rl {
+    0% { transform: translate(100vw, calc(100vh - 40px)); }
+    100% { transform: translate(-160px, calc(100vh - 40px)); }
+  }
+
+  .animate-snake-lr {
+    animation: snake-lr 2.5s linear infinite alternate;
+  }
+
+  .animate-snake-rl {
+    animation: snake-rl 2.5s linear infinite alternate;
+  }
+
+  .delay-500 {
+    animation-delay: -1s;
+  }
+
+  .delay-1000 {
+    animation-delay: -2s;
+  }
+
+  .delay-1500 {
+    animation-delay: -3s;
+  }
+
+  .delay-2000 {
+    animation-delay: -4s;
+  }
+</style>

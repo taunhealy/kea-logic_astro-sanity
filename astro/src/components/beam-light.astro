@@ -1,0 +1,77 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import { urlForImage } from '../lib/urlForImage';
+import { SITE_TITLE } from '../constants';
+import { gsap } from 'gsap';
+
+interface Props {
+  className?: string;
+}
+
+const { className = '' } = Astro.props;
+---
+<div class:list={["beams-container absolute inset-0", className]}>
+  {/* Generate multiple beams dynamically */}
+  {Array.from({ length: 20 }).map((_, i) => (
+    <div 
+      class={`beam absolute h-[3px] w-[80px] rounded-full animate-rain animate-color-shift mix-blend-screen blur-[1px] shadow-lg`}
+      style={`animation-delay: -${Math.random() * 5}s; left: ${Math.random() * 100}vw;`}
+    ></div>
+  ))}
+</div>
+
+<style>
+  @keyframes rain {
+    0% {
+      transform: translateY(0vh) rotate(15deg);
+      opacity: 0;
+      height: 3px;
+    }
+    10% {
+      opacity: 1;
+      height: 10px;
+    }
+    90% {
+      opacity: 1;
+      height: 10px;
+    }
+    100% {
+      transform: translateY(120vh) rotate(15deg);
+      opacity: 0;
+      height: 3px;
+    }
+  }
+
+  @keyframes color-shift {
+    0% { background-color: rgb(168, 85, 247, 0.7); }  /* Purple */
+    33% { background-color: rgb(34, 197, 94, 0.7); }  /* Green */
+    66% { background-color: rgb(249, 115, 22, 0.7); } /* Orange */
+    100% { background-color: rgb(168, 85, 247, 0.7); } /* Back to Purple */
+  }
+
+  .animate-rain {
+    animation: rain 2s linear infinite;
+  }
+
+  .animate-color-shift {
+    animation: color-shift 3s linear infinite;
+  }
+
+  .beam {
+    animation-fill-mode: both;
+    transform-origin: center;
+    box-shadow: 0 0 10px currentColor;
+  }
+
+  .beam::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: inherit;
+    filter: blur(2px);
+    opacity: 0.3;
+  }
+</style>

@@ -1,0 +1,16 @@
+---
+import BeamLight from './beam-light.astro';
+import PartyButton from './PartyButton';
+---
+
+<div id="party-mode" class="fixed inset-0 pointer-events-none z-[9999] hidden">
+  <BeamLight />
+</div>
+
+<PartyButton client:load />
+
+<style>
+  .beams-container {
+    transition: opacity 0.5s ease-in-out;
+  }
+</style>
