@@ -5,6 +5,7 @@ import sitemap from '@astrojs/sitemap';
 import sanity from '@sanity/astro';	
 import tailwind from '@astrojs/tailwind';
 import react from '@astrojs/react';
+import gsap from 'gsap';
 
 // https://astro.build/config
 export default defineConfig({
@@ -15,6 +16,11 @@ export default defineConfig({
 		apiVersion: '2024-01-19',
 		useCdn: true
 	  }), tailwind(), react()],
+	  vite: {
+		optimizeDeps: {
+		  include: ['gsap']
+		}
+	  }
 	  
 })
 		
