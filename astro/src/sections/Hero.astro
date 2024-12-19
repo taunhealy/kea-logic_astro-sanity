@@ -26,7 +26,7 @@ const { heroImage, heroVideo, heroTitle, heroSubtitle, heroLogos } = Astro.props
 
 <section class="hero bg-black flex flex-col h-[100vh]">
   <div class="section-padding flex flex-col items-left py-[0px] gap-[90px] pt-[120px]">
-    <div class="titles-container flex flex-col gap-[16px] max-w-[540px] h-full">
+    <div class="titles-container flex flex-col gap-[16px] max-w-[540px] h-full px-[32px]">
       <h4 class="text-white">Kea Logic</h4>
       <h1 class="text-white">Creating <span class="word-fast">fast</span> and <span class="word-minimal">minimal</span> <span class="word-content">content</span> websites.</h1>
     </div>
@@ -61,6 +61,7 @@ const { heroImage, heroVideo, heroTitle, heroSubtitle, heroLogos } = Astro.props
 
     // Left-to-right beams
     leftBeams.forEach((beam, index) => {
+      // First set of beams
       gsap.set(beam, { 
         x: -200,
         y: index * 40
@@ -86,10 +87,29 @@ const { heroImage, heroVideo, heroTitle, heroSubtitle, heroLogos } = Astro.props
           }
         }
       });
+
+      // Trailing beams
+      const trailingBeam = beam.cloneNode(true);
+      beam.parentNode.appendChild(trailingBeam);
+      
+      gsap.set(trailingBeam, { 
+        x: -200,
+        y: index * 40
+      });
+      
+      gsap.to(trailingBeam, {
+        x: '100vw',
+        duration: 3,
+        ease: "power2.inOut",
+        repeat: -1,
+        delay: (index * 0.3) + 1.5, // Offset by 1.5 seconds
+        yoyo: true
+      });
     });
 
-    // Right-to-left beams
+    // Right-to-left beams with trailing effect
     rightBeams.forEach((beam, index) => {
+      // First set of beams
       gsap.set(beam, { 
         x: '100vw',
         y: index * 40
@@ -100,20 +120,34 @@ const { heroImage, heroVideo, heroTitle, heroSubtitle, heroLogos } = Astro.props
         duration: 3,
         ease: "power2.inOut",
         repeat: -1,
-        delay: (index * 0.3) + 1.5, // Offset the start time
+        delay: (index * 0.3) + 1.5,
         yoyo: true,
         onUpdate: function() {
           const progress = this.progress();
-          if (progress > 0.6 && progress < 0.8) { // Adjusted trigger point for right-to-left
+          if (progress > 0.6 && progress < 0.8) {
             if (index === 0) gsap.to(fastWord, { color: '#a855f7', duration: 0.3 });
             if (index === 1) gsap.to(minimalWord, { color: '#22c55e', duration: 0.3 });
             if (index === 2) gsap.to(contentWord, { color: '#f97316', duration: 0.3 });
-          } else {
-            if (index === 0) gsap.to(fastWord, { color: '#ffffff', duration: 0.5 });
-            if (index === 1) gsap.to(minimalWord, { color: '#ffffff', duration: 0.5 });
-            if (index === 2) gsap.to(contentWord, { color: '#ffffff', duration: 0.5 });
           }
         }
+      });
+
+      // Trailing beams
+      const trailingBeam = beam.cloneNode(true);
+      beam.parentNode.appendChild(trailingBeam);
+      
+      gsap.set(trailingBeam, { 
+        x: '100vw',
+        y: index * 40
+      });
+      
+      gsap.to(trailingBeam, {
+        x: -200,
+        duration: 3,
+        ease: "power2.inOut",
+        repeat: -1,
+        delay: (index * 0.3) + 3, // Offset by 3 seconds from the first set
+        yoyo: true
       });
     });
   });

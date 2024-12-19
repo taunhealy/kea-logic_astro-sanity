@@ -1,27 +1,63 @@
 ---
-import type { HTMLAttributes } from 'astro/types';
 import { urlForImage } from '../lib/urlForImage';
-import { SITE_TITLE } from '../constants';
-import { gsap } from 'gsap';
+import WorkCard from '../components/WorkCard.astro';
+import type { WorkSectionProps } from '../types';
 
-interface Props {
-  heroImage?: {
-    asset: {
-      _ref: string;
-    };
-  };
-  heroVideo?: string;
-  heroTitle?: string;
-  heroSubtitle?: string;
-  heroLogos?: Array<{
-    asset: {
-      _ref: string;
-    };
-  }>;
-}
+const { sectionTitle = "Our Work", works } = Astro.props as WorkSectionProps;
 
-const { heroImage, heroVideo, heroTitle, heroSubtitle, heroLogos } = Astro.props;
+const categories = [...new Set(works?.flatMap(work => 
+  work.categories?.map(cat => ({
+    title: cat.title,
+    slug: cat.slug.current
+  }))
+))];
 ---
-<section class="hero bg-black flex flex-col h-[100vh] w-screen relative overflow-hidden">
-  <!-- Add your other hero content here -->
+
+<section class="hero-work-section bg-black flex flex-col h-[630px] w-screen relative overflow-hidden pt-[32px] gap-[32px]">
+  <div class="site-headings-container px-[32px]">
+    <h4 class="text-white">{sectionTitle}</h4>
+  </div>
+  
+  <div class="categories-filter px-[32px] flex gap-4 mb-6">
+    {categories?.map((category) => (
+      <button 
+        class="text-white opacity-60 hover:opacity-100 transition-opacity text-sm py-1 px-3 rounded-full border border-white/20"
+        data-category={category.slug}
+      >
+        {category.title}
+      </button>
+    ))}
+  </div>
+  
+  <div class="work-cards-container px-[32px] min-h-[568px] h-[90px] flex flex-row gap-[54px] overflow-x-auto">
+    {works?.map((work) => (
+      <WorkCard work={work} />
+    ))}
+  </div>
 </section>
+
+<style>
+  .work-cards-container {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+  }
+  
+  .work-cards-container::-webkit-scrollbar {
+    height: 6px;
+  }
+  
+  .work-cards-container::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .work-cards-container::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+  }
+
+  .project-types {
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+</style>

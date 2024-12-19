@@ -6,16 +6,19 @@ export default defineType({
   type: 'document',
   fields: [
     defineField({
-      name: 'workType',
-      title: 'Work Type',
+      name: 'title',
+      title: 'Title',
       type: 'string',
-      options: {
-        list: [
-          {title: 'Web Design', value: 'webDesign'},
-          {title: 'Web Development', value: 'webDevelopment'}
-        ],
-      },
-      validation: Rule => Rule.required(),
+    }),
+    defineField({
+      name: 'categories',
+      title: 'Work Categories',
+      type: 'array',
+      of: [{
+        type: 'reference',
+        to: [{ type: 'workCategory' }]
+      }],
+      validation: Rule => Rule.required().min(1)
     }),
     defineField({
       name: 'client',
@@ -44,12 +47,11 @@ export default defineType({
     select: {
       clientName: 'client.coupleNames',
       media: 'image',
-      workType: 'workType'
     },
-    prepare({clientName, media, workType}) {
+    prepare({clientName, media}) {
       return {
         title: clientName || 'Untitled Work',
-        subtitle: workType,
+        subtitle: 'Work',
         media: media
       }
     }

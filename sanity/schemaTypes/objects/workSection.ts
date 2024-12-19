@@ -6,10 +6,20 @@ export default defineType({
   type: 'object',
   fields: [
     defineField({
+      name: 'sectionTitle',
+      title: 'Section Title',
+      type: 'string',
+      initialValue: 'Our Work'
+    }),
+    defineField({
       name: 'works',
-      title: 'Works',
+      title: 'Featured Works',
       type: 'array',
-      of: [{type: 'reference', to: [{type: 'work'}]}],
+      of: [{
+        type: 'reference',
+        to: [{ type: 'work' }]
+      }],
+      validation: Rule => Rule.required().min(1)
     }),
   ],
 })

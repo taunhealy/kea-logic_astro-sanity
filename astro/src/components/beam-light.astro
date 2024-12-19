@@ -14,7 +14,7 @@ const { className = '' } = Astro.props;
   {/* Generate multiple beams dynamically */}
   {Array.from({ length: 20 }).map((_, i) => (
     <div 
-      class={`beam absolute h-[3px] w-[80px] rounded-full animate-rain animate-color-shift mix-blend-screen blur-[1px] shadow-lg`}
+      class={`beam absolute h-[3px] w-[80px] rounded-full animate-rain ${i % 3 === 0 ? 'animate-strobe' : 'animate-color-shift'} mix-blend-screen blur-[1px] shadow-lg`}
       style={`animation-delay: -${Math.random() * 5}s; left: ${Math.random() * 100}vw;`}
     ></div>
   ))}
@@ -49,12 +49,24 @@ const { className = '' } = Astro.props;
     100% { background-color: rgb(168, 85, 247, 0.7); } /* Back to Purple */
   }
 
+  @keyframes strobe {
+    0% { opacity: 1; }
+    49% { opacity: 1; }
+    50% { opacity: 0; }
+    99% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+
   .animate-rain {
     animation: rain 2s linear infinite;
   }
 
   .animate-color-shift {
     animation: color-shift 3s linear infinite;
+  }
+
+  .animate-strobe {
+    animation: strobe 0.3s linear infinite, rain 2s linear infinite;
   }
 
   .beam {
