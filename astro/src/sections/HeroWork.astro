@@ -1,63 +1,92 @@
 ---
-import { urlForImage } from '../lib/urlForImage';
-import WorkCard from '../components/WorkCard.astro';
-import type { WorkSectionProps } from '../types';
+import type { Work } from '../types/workType';
+import WorkGallery from '../components/WorkGallery';
+import { client } from '../../sanity';
 
-const { sectionTitle = "Our Work", works } = Astro.props as WorkSectionProps;
+// Fetch works and categories from Sanity
+const works = await client.fetch(`
+  *[_type == "work"] {
+    title,
+    slug,
+    thumbnail,
+    categories[]-> {
+      title,
+      slug
+    }
+  }
+`);
 
-const categories = [...new Set(works?.flatMap(work => 
-  work.categories?.map(cat => ({
-    title: cat.title,
-    slug: cat.slug.current
-  }))
-))];
+const categories = await client.fetch(`
+  *[_type == "workCategory"] | order(order asc) {
+    title,
+    slug
+  }
+`);
+
+interface Props {
+  sectionTitle?: string;
+}
+
+const { sectionTitle = 'Our Work' } = Astro.props as Props;
 ---
 
-<section class="hero-work-section bg-black flex flex-col h-[630px] w-screen relative overflow-hidden pt-[32px] gap-[32px]">
-  <div class="site-headings-container px-[32px]">
-    <h4 class="text-white">{sectionTitle}</h4>
+<section class="hero-work">
+  <div class="title-container">
+    <h4>{sectionTitle}</h4>
   </div>
   
-  <div class="categories-filter px-[32px] flex gap-4 mb-6">
-    {categories?.map((category) => (
+  <div class="categories-container">
+    {categories?.map((category: { title: string; slug: { current: string } }) => (
       <button 
-        class="text-white opacity-60 hover:opacity-100 transition-opacity text-sm py-1 px-3 rounded-full border border-white/20"
+        class="category-button"
         data-category={category.slug}
       >
         {category.title}
       </button>
     ))}
   </div>
-  
-  <div class="work-cards-container px-[32px] min-h-[568px] h-[90px] flex flex-row gap-[54px] overflow-x-auto">
-    {works?.map((work) => (
-      <WorkCard work={work} />
-    ))}
-  </div>
+
+  <WorkGallery client:load works={works} categories={categories} />
 </section>
 
 <style>
-  .work-cards-container {
-    scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
-  }
-  
-  .work-cards-container::-webkit-scrollbar {
-    height: 6px;
-  }
-  
-  .work-cards-container::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  
-  .work-cards-container::-webkit-scrollbar-thumb {
-    background-color: rgba(255, 255, 255, 0.2);
-    border-radius: 3px;
+  .hero-work {
+    background-color: black;
+    display: flex;
+    flex-direction: column;
+    height: 630px;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    padding-top: 2rem;
+    gap: 2rem;
   }
 
-  .project-types {
-    font-size: 12px;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
+  .title-container {
+    padding: 0 2rem;
+  }
+
+  .title-container h4 {
+    color: white;
+  }
+
+  .categories-container {
+    display: flex;
+    gap: 1rem;
+    padding: 0 2rem;
+  }
+
+  .category-button {
+    color: white;
+    opacity: 0.6;
+    font-size: 0.875rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: opacity 300ms;
+  }
+
+  .category-button:hover {
+    opacity: 1;
   }
 </style>

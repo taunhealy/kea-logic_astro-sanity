@@ -13,6 +13,7 @@ import blogSection from './objects/blogSection'
 import contactSection from './objects/contactSection'
 import imageFullScreenSection from './objects/ImageFullScreenSection'
 import post from './documents/post'
+import workCategory from './documents/workCategory'
 
 import category from './documents/category'
 
@@ -34,4 +35,5 @@ export const schemaTypes = [
   imageFullScreenSection,
   post,
   category,
+  workCategory
 ]
