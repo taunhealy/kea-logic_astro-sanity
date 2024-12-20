@@ -1,6 +1,5 @@
 ---
 import HeaderLink from '../components/HeaderLink.astro';
-
 import { client } from '../../sanity';
 import Button from '../components/Button';
 
@@ -11,62 +10,54 @@ const pages = await client.fetch(`*[_type == "page" && defined(slug.current)] | 
 }`);
 ---
 
-<header class="fixed w-full bg-black backdrop-blur-md z-50">
+<header class="fixed w-full backdrop-blur-md z-50 transition-[background-color,color] duration-700" data-theme="dark">
 	<nav class="px-[32px]">
 		<div class="flex items-center justify-between h-[90px]">
-			<!-- Logo/Site Title -->
-			
-
-			<!-- Navigation Links -->
-	
 			<div class="hidden md:flex items-center space-x-8">
 				{
 					pages.map((page: { title: string; slug: string }) => (
 						<HeaderLink 
 							href={page.slug === 'home' ? '/' : `/${page.slug}`}
-							class="text-white"
+							class="transition-colors duration-300"
 						>
 							{page.title}
 						</HeaderLink>
 					))
 				}
-				
 			</div>
 			<Button client:load variant="primary">
 				Contact
 			</Button>
-			</div>
-
-			<!-- Mobile Menu Button -->
-		
-		</div>
-
-		<!-- Mobile Menu -->
-		<div class="hidden md:hidden" id="mobile-menu">
-			<div class="pt-2 pb-4 space-y-1">
-				{
-					pages.map((page: { title: string; slug: string }) => (
-						<HeaderLink 
-							href={page.slug === 'home' ? '/' : `/${page.slug}`}
-							class="block px-4 py-2"
-						>
-							{page.title}
-						</HeaderLink>
-					))
-				}
-				<Button client:load variant="primary">
-					Contact Us
-				</Button>
-			</div>
 		</div>
 	</nav>
 </header>
 
-<script>
-	const mobileMenuButton = document.getElementById('mobile-menu-button');
-	const mobileMenu = document.getElementById('mobile-menu');
+<style>
+	header[data-theme="dark"] {
+		@apply bg-black;
+	}
+	
+	header[data-theme="light"] {
+		@apply bg-white;
+	}
 
-	mobileMenuButton?.addEventListener('click', () => {
-		mobileMenu?.classList.toggle('hidden');
+	header[data-theme="light"] :global(a) {
+		@apply text-black;
+	}
+
+	header[data-theme="dark"] :global(a) {
+		@apply text-white;
+	}
+</style>
+
+<script>
+	import { $theme } from '../utils/themeStore';
+
+	// Subscribe to theme changes
+	$theme.subscribe(theme => {
+		const header = document.querySelector('header');
+		if (header) {
+			header.setAttribute('data-theme', theme);
+		}
 	});
 </script>

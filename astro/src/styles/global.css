@@ -267,6 +267,31 @@
   .hide-scrollbar::-webkit-scrollbar {
     display: none;
   }
+
+  /* Party Mode Button Animation */
+  .party-button {
+    background: linear-gradient(
+      45deg,
+      #22c55e,
+      #f97316,
+      #a855f7,
+      #22c55e
+    );
+    background-size: 400% 400%;
+    animation: party-gradient 3s ease infinite;
+  }
+
+  @keyframes party-gradient {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
 }
 
 /* Dark Mode Overrides */

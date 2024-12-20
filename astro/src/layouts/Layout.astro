@@ -2,7 +2,8 @@
 import BaseHead from '../components/BaseHead.astro';
 import Header from '../sections/Header.astro';
 import Footer from '../sections/Footer.astro';
-import PartyMode from '../components/PartyMode.astro'
+import PartyMode from '../components/PartyMode.astro';
+import ThemeToggle from '../components/ThemeToggle';
 
 interface Props {
   title: string;
@@ -20,6 +21,7 @@ const { title, description = '' } = Astro.props;
   <body>
     <Header />
     <PartyMode />
+    <ThemeToggle client:load />
     <main class="main-content pt-[90px]">
       <slot />
     </main>

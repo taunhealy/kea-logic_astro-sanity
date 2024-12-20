@@ -1,0 +1,102 @@
+---
+import { client } from '../../../sanity';
+import Layout from '../../layouts/Layout.astro';
+
+// Generate static paths for all work items
+export async function getStaticPaths() {
+  const works = await client.fetch(`
+    *[_type == "work"] {
+      "slug": slug.current,
+      title,
+      description,
+      coverImage {
+        asset-> {
+          url
+        }
+      },
+      categories[]-> {
+        title,
+        slug
+      },
+      technologies,
+      completionDate,
+      projectUrl,
+      testimonial
+    }
+  `);
+
+  return works.map((work: any) => ({
+    params: { slug: work.slug },
+    props: { work }
+  }));
+}
+
+// Get the work data from props
+const { work } = Astro.props;
+
+// Redirect to 404 if work not found
+if (!work) {
+  return Astro.redirect('/404');
+}
+---
+
+<Layout title={work.title}>
+  <script>
+    import { setTheme } from '../../utils/themeStore';
+    // Set light theme for work pages
+    setTheme('light');
+  </script>
+  
+  <article class="max-w-4xl mx-auto px-4 py-12">
+    <header class="mb-8">
+      <h1 class="text-4xl font-bold mb-4 text-black">{work.title}</h1>
+      {work.categories?.length > 0 && (
+        <div class="flex gap-2 mb-4">
+          {work.categories.map((category) => (
+            <span class="px-3 py-1 bg-gray-100 rounded-full text-sm">
+              {category.title}
+            </span>
+          ))}
+        </div>
+      )}
+    </header>
+
+    {work.coverImage?.asset?.url && (
+      <img 
+        src={work.coverImage.asset.url}
+        alt={work.title}
+        class="w-full h-[400px] object-cover rounded-lg mb-8"
+      />
+    )}
+
+    <div class="prose max-w-none">
+      <p class="text-lg mb-6 text-black">{work.description}</p>
+
+      {work.technologies && (
+        <div class="mb-6">
+          <h2 class="text-2xl font-bold mb-3 text-black">Technologies Used</h2>
+          <div class="flex flex-wrap gap-2">
+            {work.technologies.map((tech) => (
+              <span class="px-3 py-1 bg-gray-100 rounded-full text-sm">
+                {tech}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {work.projectUrl && (
+        <div class="mt-8">
+          <a 
+            href={work.projectUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-block px-6 py-3 bg-white text-black rounded-lg hover:bg-gray-200 transition-colors"
+          >
+            View Project
+          </a>
+        </div>
+      )}
+    </div>
+  </article>
+</Layout>
