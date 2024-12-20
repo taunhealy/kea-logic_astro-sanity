@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import type { Work } from '../types/workType';
-import { urlForImage } from '../lib/urlForImage';
 
 interface Props {
   works: Work[];
@@ -10,102 +9,93 @@ interface Props {
   }[];
 }
 
+const CATEGORY_COLORS = [
+  '#22c55e',  // green - color 1
+  '#f97316',  // orange - color 2
+  '#a855f7',  // purple - color 3
+];
+
 export default function WorkGallery({ works, categories }: Props) {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [filteredWorks, setFilteredWorks] = useState<Work[]>(works);
 
   useEffect(() => {
-    console.log('Raw Works:', works);
-    // Check if works is an array of references
-    const hasUnresolvedReferences = works?.some(work => work._type === 'reference');
-    if (hasUnresolvedReferences) {
-      console.warn('Works contains unresolved references');
+    if (selectedCategory) {
+      const filtered = works.filter(work => 
+        work.categories.some(cat => cat.slug.current === selectedCategory)
+      );
+      setFilteredWorks(filtered);
+    } else {
+      setFilteredWorks(works);
     }
-    setIsLoading(false);
-  }, [works]);
-
-  const filteredWorks = selectedCategory && works
-    ? works.filter(work => 
-        work.categories?.some(cat => cat.slug.current === selectedCategory)
-      )
-    : works;
-
-  // Placeholder data for empty states
-  const placeholderCategories = [
-    { title: 'Web', slug: { current: 'web' } },
-    { title: 'Mobile', slug: { current: 'mobile' } },
-    { title: 'Design', slug: { current: 'design' } }
-  ];
-
-  const placeholderWorks = Array(3).fill(null).map((_, index) => ({
-    title: 'Loading Project...',
-    slug: { current: `placeholder-${index}` },
-    categories: [{ title: 'Loading...', slug: { current: `loading-${index}` } }],
-    thumbnail: null
-  }));
-
-  const displayCategories = categories?.length ? categories : placeholderCategories;
-  const displayWorks = (!works?.length || isLoading) ? placeholderWorks : filteredWorks;
+  }, [selectedCategory, works]);
 
   return (
-    <div className="flex flex-row gap-8 px-8">
-      <div className="flex flex-col gap-4 pt-4">
-        <div 
+    <div className="flex flex-col gap-8 px-8">
+      {/* Category Buttons */}
+      <div className="flex gap-4">
+        <button 
           onClick={() => setSelectedCategory(null)}
-          className={`w-6 h-6 rounded-full bg-orange-500 cursor-pointer transition-transform duration-300 hover:scale-110 ${
-            !selectedCategory ? 'ring-2 ring-white ring-offset-2 ring-offset-black' : ''
-          }`}
-        />
-        {displayCategories.map((category) => (
-          <div
+          className={`px-4 py-2 rounded-full text-white border border-white/20 transition-all flex items-center gap-2
+            ${!selectedCategory ? 'opacity-100' : 'opacity-60 hover:opacity-80'}`}
+        >
+          <div className={`w-3 h-3 rounded-full bg-white transition-all duration-200
+            ${!selectedCategory ? 'opacity-100 scale-100' : 'opacity-0 scale-0'}`} 
+          />
+          All
+        </button>
+        {categories.map((category) => (
+          <button
             key={category.slug.current}
             onClick={() => setSelectedCategory(category.slug.current)}
-            className={`w-6 h-6 rounded-full bg-green-500 cursor-pointer transition-transform duration-300 hover:scale-110 ${
-              selectedCategory === category.slug.current ? 'ring-2 ring-white ring-offset-2 ring-offset-black' : ''
-            }`}
-          />
+            className={`px-4 py-2 rounded-full text-white border border-white/20 transition-all flex items-center gap-2
+              ${selectedCategory === category.slug.current ? 'opacity-100' : 'opacity-60 hover:opacity-80'}`}
+          >
+            <div 
+              className={`w-3 h-3 rounded-full transition-all duration-300
+                ${selectedCategory === category.slug.current ? 'opacity-100 scale-100' : 'opacity-0 scale-0'}`}
+              style={{ backgroundColor: CATEGORY_COLORS[categories.indexOf(category) % CATEGORY_COLORS.length] }}
+            />
+            {category.title}
+          </button>
         ))}
       </div>
 
-      <div className="flex-1 flex gap-[54px] overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/20">
-        {displayWorks.map((work, index) => (
-          <article 
-            key={work.slug?.current || `work-${index}`} 
-            className={`flex flex-col gap-4 min-w-[380px] group ${isLoading ? 'animate-pulse' : ''}`}
+      {/* Works Grid */}
+      <div className="flex-1 flex gap-[54px] overflow-x-auto scrollbar-thin max-w-[1400px">
+        {filteredWorks.map((work) => (
+          <div 
+            key={work.slug.current}
+            className="min-w-[400px] max-w-[400px] group cursor-pointer"
           >
-            <a href={isLoading ? '#' : `/work/${work.slug?.current || ''}`} className="block">
-              <div className="relative aspect-video overflow-hidden rounded-lg bg-gray-800">
-                {work.thumbnail && !isLoading ? (
-                  <img 
-                    src={urlForImage(work.thumbnail)?.url()} 
-                    alt={work.title} 
-                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+            <div className="relative aspect-[4/3] mb-4 w-full h-[300px]">
+              {work.coverImage?.asset?.url ? (
+                <img 
+                  src={work.coverImage.asset.url} 
+                  alt={work.title}
+                  className="w-full h-full object-cover rounded-lg"
+                />
+              ) : (
+                <div className="w-full h-full bg-gray-800 rounded-lg" />
+              )}
+              {/* Category indicators */}
+              <div className="absolute top-4 left-4 flex gap-2 rounded-full border border-gray-300 p-1">
+                {work.categories.map((category) => (
+                  <div
+                    key={category.slug.current}
+                    className="w-3 h-3 rounded-full "
+                    style={{ backgroundColor: CATEGORY_COLORS[categories.findIndex(cat => cat.slug.current === category.slug.current) % CATEGORY_COLORS.length] }}
                   />
-                ) : (
-                  <div className="w-full h-full bg-gray-700" />
-                )}
+                ))}
               </div>
-              
-              <div className="text-white mt-4">
-                <h3 className="text-xl font-medium mb-2">
-                  {isLoading ? (
-                    <div className="h-6 w-3/4 bg-gray-700 rounded" />
-                  ) : (
-                    work.title
-                  )}
-                </h3>
-                {(work.categories || isLoading) && (
-                  <div className="opacity-60">
-                    {isLoading ? (
-                      <div className="h-4 w-1/2 bg-gray-700 rounded" />
-                    ) : (
-                      work.categories?.map(cat => cat.title).join(' • ')
-                    )}
-                  </div>
-                )}
-              </div>
-            </a>
-          </article>
+            </div>
+            <h3 className="text-xl font-medium text-white group-hover:text-gray-300 transition-colors">
+              {work.title}
+            </h3>
+            <p className="text-white/60 mt-1 line-clamp-2">
+              {work.description}
+            </p>
+          </div>
         ))}
       </div>
     </div>

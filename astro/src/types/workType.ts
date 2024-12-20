@@ -4,16 +4,30 @@ export interface Work {
     slug: {
       current: string;
     };
-    thumbnail?: {
-      // Sanity image asset type properties
-      asset?: {
-        _ref: string;
-      };
+    client?: {
+      _ref: string;
     };
-    categories?: {
+    categories: {
       title: string;
       slug: {
         current: string;
       }
     }[];
+    description: string;
+    technologies?: string[];
+    completionDate?: string;
+    coverImage: {
+      asset: {
+        _ref: string;
+        url?: string;
+      };
+    };
+    gallery?: {
+      asset: {
+        _ref: string;
+        url?: string;
+      };
+    }[];
+    projectUrl?: string;
+    testimonial?: string;
   }

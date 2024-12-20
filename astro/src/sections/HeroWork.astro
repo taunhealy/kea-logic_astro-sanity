@@ -3,12 +3,16 @@ import type { Work } from '../types/workType';
 import WorkGallery from '../components/WorkGallery';
 import { client } from '../../sanity';
 
-// Fetch works and categories from Sanity
 const works = await client.fetch(`
   *[_type == "work"] {
     title,
     slug,
-    thumbnail,
+    coverImage {
+      asset-> {
+        url
+      }
+    },
+    description,
     categories[]-> {
       title,
       slug
@@ -35,17 +39,6 @@ const { sectionTitle = 'Our Work' } = Astro.props as Props;
     <h4>{sectionTitle}</h4>
   </div>
   
-  <div class="categories-container">
-    {categories?.map((category: { title: string; slug: { current: string } }) => (
-      <button 
-        class="category-button"
-        data-category={category.slug}
-      >
-        {category.title}
-      </button>
-    ))}
-  </div>
-
   <WorkGallery client:load works={works} categories={categories} />
 </section>
 
@@ -68,25 +61,5 @@ const { sectionTitle = 'Our Work' } = Astro.props as Props;
 
   .title-container h4 {
     color: white;
-  }
-
-  .categories-container {
-    display: flex;
-    gap: 1rem;
-    padding: 0 2rem;
-  }
-
-  .category-button {
-    color: white;
-    opacity: 0.6;
-    font-size: 0.875rem;
-    padding: 0.25rem 0.75rem;
-    border-radius: 9999px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    transition: opacity 300ms;
-  }
-
-  .category-button:hover {
-    opacity: 1;
   }
 </style>
