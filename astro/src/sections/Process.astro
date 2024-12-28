@@ -1,28 +1,33 @@
 ---
 import { client } from '../../sanity';
 
-// Fetch process steps from Sanity
+const { processes: processRefs } = Astro.props;
+
+// Fetch the full process data for each reference
 const processes = await client.fetch(`
-  *[_type == "process"] | order(stepNumber asc) {
+  *[_type == "process" && _id in $refs] | order(stepNumber asc) {
     title,
     description,
     stepNumber,
     icon,
     color
   }
-`);
+`, { refs: processRefs?.map((ref: any) => ref._ref) || [] });
 ---
 
-<section class="py-16 bg-white">
-  <div class="container mx-auto px-4">
-    <h4 class="text-center text-3xl font-bold mb-12">Our Process</h4>
+<section class="flex flex-col py-16 bg-primary transition-colors duration-300">
+  <div class="section-padding flex flex-col gap-[90px]">
+    <div class="titles-container flex flex-col gap-[16px]">
+      <h4 class="text-text-secondary transition-colors duration-300">Our Process</h4>
+      <h1 class="text-text-primary transition-colors duration-300 max-w-[540px]">How we work</h1>
+    </div>
     
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
       {processes.map((process: any) => (
-        <div class="flex flex-col items-center text-center">
+        <div class="flex flex-col text-left">
           {process.icon && (
             <div 
-              class="w-16 h-16 mb-4 flex items-center justify-center rounded-full" 
+              class="w-16 h-16 mb-4 flex items-center justify-center rounded-full transition-all duration-300" 
               style={`background-color: ${process.color}`}
             >
               <img
@@ -32,13 +37,27 @@ const processes = await client.fetch(`
               />
             </div>
           )}
-          <h3 class="text-[21px] font-medium mb-2 font-['Inter']">{process.title}</h3>
-          <p class="text-gray-600">{process.description}</p>
+          <h3 class="text-[21px] font-medium mb-2 font-['Inter'] text-text-primary transition-colors duration-300">
+            {process.title}
+          </h3>
+          <p class="text-text-secondary transition-colors duration-300">{process.description}</p>
         </div>
       ))}
     </div>
   </div>
 </section>
+
+<script>
+  import { $theme } from '../utils/themeStore';
+
+  // Subscribe to theme changes
+  $theme.subscribe(theme => {
+    const sections = document.querySelectorAll('section');
+    sections.forEach(section => {
+      section.setAttribute('data-theme', theme);
+    });
+  });
+</script>
 
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');

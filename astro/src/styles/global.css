@@ -25,6 +25,48 @@
   h4 {
     @apply h4;
   }
+
+
+  :root {
+    /* Brand Colors */
+    --color-primary: #22c55e;    /* Green */
+    --color-secondary: #f97316;  /* Orange */
+    --color-tertiary: #a855f7;   /* Purple */
+    
+    /* Base Colors */
+    --color-black: #000000;
+    --color-white: #FFFFFF;
+    
+    /* Text Colors */
+    --color-text-primary: var(--color-black);
+    --color-text-secondary: #4B5563;
+    --color-text-tertiary: #9CA3AF;
+    
+    /* Background Colors */
+    --color-bg-primary: var(--color-white);
+    --color-bg-secondary: #F3F4F6;
+    --color-bg-tertiary: #E5E7EB;
+    
+    /* Border Colors */
+    --color-border-light: #E5E7EB;
+    --color-border-medium: #D1D5DB;
+    --color-border-dark: #9CA3AF;
+  }
+
+  /* Dark mode overrides */
+  [data-theme="dark"] {
+    --color-text-primary: var(--color-white);
+    --color-text-secondary: #E5E7EB;
+    --color-text-tertiary: #9CA3AF;
+    
+    --color-bg-primary: var(--color-black);
+    --color-bg-secondary: #1F2937;
+    --color-bg-tertiary: #374151;
+    
+    --color-border-light: #374151;
+    --color-border-medium: #4B5563;
+    --color-border-dark: #6B7280;
+  }
 }
 
 
@@ -291,6 +333,39 @@
     100% {
       background-position: 0% 50%;
     }
+  }
+
+  /* Text Colors */
+  .text-primary {
+    color: var(--color-text-primary);
+  }
+  .text-secondary {
+    color: var(--color-text-secondary);
+  }
+  .text-tertiary {
+    color: var(--color-text-tertiary);
+  }
+
+  /* Background Colors */
+  .bg-primary {
+    background-color: var(--color-bg-primary);
+  }
+  .bg-secondary {
+    background-color: var(--color-bg-secondary);
+  }
+  .bg-tertiary {
+    background-color: var(--color-bg-tertiary);
+  }
+
+  /* Border Colors */
+  .border-light {
+    border-color: var(--color-border-light);
+  }
+  .border-medium {
+    border-color: var(--color-border-medium);
+  }
+  .border-dark {
+    border-color: var(--color-border-dark);
   }
 }
 

@@ -18,6 +18,8 @@ const CATEGORY_COLORS = [
   '#a855f7',  // purple - color 3
 ];
 
+const BORDER_WIDTHS = ['3px', '5px', '7px'];
+
 export type Theme = 'dark' | 'light';
 
 export const $theme = atom<Theme>('dark');
@@ -70,16 +72,70 @@ export default function WorkGallery({ works, categories }: Props) {
     };
   }, [selectedCategory, works]);
 
+  useEffect(() => {
+    if (!containerRef.current) return;
+    
+    const imageContainers = containerRef.current.querySelectorAll('.work-card-image');
+    const cards = containerRef.current.querySelectorAll('.work-card');
+    
+    // Create the main animation
+    const animation = gsap.fromTo(imageContainers, 
+      { opacity: 0.3 },
+      { 
+        opacity: 1,
+        duration: 0.5,
+        stagger: 0.2,
+        ease: "power2.inOut",
+        repeat: -1,
+        yoyo: true
+      }
+    );
+
+    // Add hover events to each card
+    cards.forEach((card, index) => {
+      card.addEventListener('mouseenter', () => {
+        // Pause the main animation
+        animation.pause();
+        
+        // Set all cards to 30% opacity
+        gsap.to(imageContainers, {
+          opacity: 0.3,
+          duration: 0.3
+        });
+        
+        // Set hovered card to 100% opacity
+        gsap.to(imageContainers[index], {
+          opacity: 1,
+          duration: 0.3
+        });
+      });
+
+      card.addEventListener('mouseleave', () => {
+        // Resume the main animation
+        animation.resume();
+      });
+    });
+
+    return () => {
+      animation.kill();
+      // Clean up event listeners
+      cards.forEach(card => {
+        card.removeEventListener('mouseenter', () => {});
+        card.removeEventListener('mouseleave', () => {});
+      });
+    };
+  }, []);
+
   return (
     <div className="flex flex-col gap-4 md:gap-8 px-4 md:px-8">
       {/* CATEGORY FILTERS */}
-      <div className="flex flex-wrap gap-2 md:gap-4">
+      <div className="work-filter-buttons flex flex-wrap gap-2 md:gap-4">
         <button 
           onClick={() => setSelectedCategory(null)}
           className={`px-3 md:px-4 py-1.5 md:py-2 rounded-full text-white text-sm md:text-base border border-white/20 transition-all flex items-center gap-2
             ${!selectedCategory ? 'opacity-100' : 'opacity-70'}`}
         >
-          <div className={`w-2 md:w-3 h-2 md:h-3 rounded-full bg-white transition-all duration-200
+          <div className={`indicator-dot w-3 md:w-4 h-1.5 md:h-2 rounded-full bg-white transition-all duration-200
             ${!selectedCategory ? 'opacity-100 scale-100' : 'opacity-0 scale-0'}`} 
           />
           All
@@ -104,21 +160,32 @@ export default function WorkGallery({ works, categories }: Props) {
     {/* WORK CARDS GRID */}
 <div 
   ref={containerRef}
-  className="flex-1 flex flex-col md:flex-row gap-4 md:gap-[54px] overflow-x-auto scrollbar-thin pb-4 md:pb-0"
+  className="work-items-container min-h-[586px] flex-1 flex flex-col md:flex-row gap-4 md:gap-[54px] overflow-x-auto scrollbar-thin pb-4 md:pb-0"
 >
   {filteredWorks.map((work) => (
     <a 
       key={work.slug.current}
       href={`/work/${work.slug.current}`}
-      className="min-w-[280px] md:min-w-[400px] max-w-[280px] md:max-w-[400px] group cursor-pointer flex-shrink-0"
+      className="min-w-[280px] md:min-w-[400px] max-w-[280px] md:max-w-[400px] group cursor-pointer flex-shrink-0 work-card"
     >
-      <div className="relative aspect-[4/3] mb-3 md:mb-4 w-full h-[300px] overflow-hidden rounded-lg">
+      <div className="relative aspect-[4/3] mb-3 md:mb-4 w-full h-[300px] overflow-hidden rounded-lg work-card-image">
+        {/* Square Border Container */}
+        <div 
+          className="absolute inset-0 border-4 rounded-lg transition-all duration-300 group-hover:border-0 work-card-border"
+          style={{ 
+            borderColor: CATEGORY_COLORS[works.indexOf(work) % CATEGORY_COLORS.length],
+            borderWidth: '2px'
+          }}
+        />
+        
+        {/* Image with hover effect */}
         <img 
           src={work.coverImage.asset.url}
           alt={work.title}
-          className="w-full h-full object-cover transition-transform duration-200 ease-out opacity-[70%] hover:opacity-[85%]"
+          className="w-full h-full object-cover transition-all duration-300 scale-95 opacity-0 group-hover:scale-100 group-hover:opacity-[85%]"
         />
         
+        {/* Category indicators */}
         <div className="absolute top-4 left-4 flex gap-1.5">
           {work.categories.map((category, index) => (
             <div 

@@ -39,22 +39,15 @@ export const Button: React.FC<ButtonProps> = ({
 
   return (
     <button
+      data-party-mode
       className={cn(
-        // Base styles
         'text-main rounded-[8px] transition-colors duration-300',
         'px-6 py-2',
-        
-        // Party Mode
-        isPartyMode && 'party-button text-white hover:brightness-110',
-        
-        // Regular Variant styles (when not in party mode)
-        !isPartyMode && variant === 'primary' && [
+        variant === 'primary' && [
           'bg-[#00FF88]',
           'text-black',
           'hover:bg-white hover:text-black'
         ],
-        
-        // Allow custom classes to override defaults
         className
       )}
       {...props}

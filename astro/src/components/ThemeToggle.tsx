@@ -19,7 +19,8 @@ export default function ThemeToggle() {
   return (
     <button
       onClick={handleClick}
-      className="fixed bottom-4 left-4 z-[10000] bg-white hover:bg-[#00FF88] text-black px-4 py-2 rounded-full shadow-lg transition-colors duration-300"
+      data-party-mode
+      className="bg-white hover:bg-[#00FF88] text-black px-4 py-2 rounded-full shadow-lg transition-colors duration-300"
     >
       {isDark ? '🌞' : '🌙'}
     </button>

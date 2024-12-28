@@ -9,10 +9,12 @@ export default {
         secondary: 'Inria Sans',
       },
       colors: {
-        primary: '#FFFFFF',
-        secondary: '#121923',
-        tertiary: '#3B82F6',
-      },
+        'color-primary': 'var(--color-primary)',
+        'color-secondary': 'var(--color-secondary)',
+        'color-tertiary': 'var(--color-tertiary)',
+        
+        
+      }
     },
   },
   plugins: [],

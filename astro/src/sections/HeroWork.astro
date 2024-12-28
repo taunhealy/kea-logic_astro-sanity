@@ -47,7 +47,7 @@ const { sectionTitle = 'Our Work' } = Astro.props as Props;
     background-color: black;
     display: flex;
     flex-direction: column;
-    height: 630px;
+    min-height: 630px;
     width: 100%;
     position: relative;
     overflow: hidden;
@@ -60,6 +60,6 @@ const { sectionTitle = 'Our Work' } = Astro.props as Props;
   }
 
   .title-container h4 {
-    color: white;
+    color: var(--color-text-primary);
   }
 </style>
