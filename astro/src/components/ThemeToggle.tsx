@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react';
-import { $theme, setTheme } from '../utils/themeStore';
+import { $theme, setTheme, initializeTheme } from '../utils/themeStore';
 
 export default function ThemeToggle() {
   const [isDark, setIsDark] = useState(true);
 
   useEffect(() => {
+    // Initialize theme when component mounts
+    initializeTheme();
+    
     const unsubscribe = $theme.subscribe(theme => {
       setIsDark(theme === 'dark');
     });

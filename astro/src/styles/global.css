@@ -78,10 +78,6 @@
     font-size: 72px;
   }
 
-  .section-padding {
-    @apply px-[32px];
-  }
-
   .h1 {
     @apply font-primary font-normal tracking-[-0.02em] leading-tight
     text-primary dark:text-secondary;

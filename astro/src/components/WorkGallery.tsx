@@ -47,7 +47,7 @@ export default function WorkGallery({ works, categories }: Props) {
     
     tl.to(cards, {
       opacity: 0,
-      duration: 0.2,
+      duration: 0.7,
       stagger: 0.02,
       onComplete: () => {
         if (selectedCategory) {
@@ -62,7 +62,7 @@ export default function WorkGallery({ works, categories }: Props) {
     })
     .to(cards, {
       opacity: 1,
-      duration: 0.2,
+      duration: 0.3,
       stagger: 0.02,
       delay: 0.1
     });
@@ -78,32 +78,34 @@ export default function WorkGallery({ works, categories }: Props) {
     const imageContainers = containerRef.current.querySelectorAll('.work-card-image');
     const cards = containerRef.current.querySelectorAll('.work-card');
     
-    // Create the main animation
-    const animation = gsap.fromTo(imageContainers, 
-      { opacity: 0.3 },
-      { 
-        opacity: 1,
-        duration: 0.5,
-        stagger: 0.2,
-        ease: "power2.inOut",
-        repeat: -1,
-        yoyo: true
-      }
-    );
+    // Set initial opacity to 0
+    gsap.set(imageContainers, { opacity: 0 });
+    
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          // Simple stagger reveal animation
+          gsap.to(imageContainers, {
+            opacity: 1,
+            duration: 0.7,
+            stagger: 0.1,
+            delay: 0.3
+          });
+        }
+      });
+    }, { threshold: 0.2 });
+
+    // Observe the container
+    observer.observe(containerRef.current);
 
     // Add hover events to each card
     cards.forEach((card, index) => {
       card.addEventListener('mouseenter', () => {
-        // Pause the main animation
-        animation.pause();
-        
-        // Set all cards to 30% opacity
         gsap.to(imageContainers, {
           opacity: 0.3,
           duration: 0.3
         });
         
-        // Set hovered card to 100% opacity
         gsap.to(imageContainers[index], {
           opacity: 1,
           duration: 0.3
@@ -111,14 +113,15 @@ export default function WorkGallery({ works, categories }: Props) {
       });
 
       card.addEventListener('mouseleave', () => {
-        // Resume the main animation
-        animation.resume();
+        gsap.to(imageContainers, {
+          opacity: 1,
+          duration: 0.3
+        });
       });
     });
 
     return () => {
-      animation.kill();
-      // Clean up event listeners
+      observer.disconnect();
       cards.forEach(card => {
         card.removeEventListener('mouseenter', () => {});
         card.removeEventListener('mouseleave', () => {});

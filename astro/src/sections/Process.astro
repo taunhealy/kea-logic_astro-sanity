@@ -1,5 +1,6 @@
 ---
 import { client } from '../../sanity';
+import ProcessList from '../components/ProcessList';
 
 const { processes: processRefs } = Astro.props;
 
@@ -15,50 +16,12 @@ const processes = await client.fetch(`
 `, { refs: processRefs?.map((ref: any) => ref._ref) || [] });
 ---
 
-<section class="flex flex-col py-16 bg-primary transition-colors duration-300">
-  <div class="section-padding flex flex-col gap-[90px]">
-    <div class="titles-container flex flex-col gap-[16px]">
-      <h4 class="text-text-secondary transition-colors duration-300">Our Process</h4>
-      <h1 class="text-text-primary transition-colors duration-300 max-w-[540px]">How we work</h1>
-    </div>
+<section class="process-section px-[32px] flex flex-col gap-[54px] min-h-[560px] h-auto min-w-full py-[54px] bg-primary transition-colors duration-300">
+  <div class="process-heading w-full h-auto section-padding flex flex-col items-left justify-start">
+    <h4 class="text-text-secondary transition-colors duration-300">Our Process</h4>
     
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
-      {processes.map((process: any) => (
-        <div class="flex flex-col text-left">
-          {process.icon && (
-            <div 
-              class="w-16 h-16 mb-4 flex items-center justify-center rounded-full transition-all duration-300" 
-              style={`background-color: ${process.color}`}
-            >
-              <img
-                src={process.icon.asset.url}
-                alt={process.title}
-                class="w-8 h-8"
-              />
-            </div>
-          )}
-          <h3 class="text-[21px] font-medium mb-2 font-['Inter'] text-text-primary transition-colors duration-300">
-            {process.title}
-          </h3>
-          <p class="text-text-secondary transition-colors duration-300">{process.description}</p>
-        </div>
-      ))}
-    </div>
+  </div>
+  <div class="process-list w-full h-full flex flex-row justify-center">
+    <ProcessList processes={processes} client:load />
   </div>
 </section>
-
-<script>
-  import { $theme } from '../utils/themeStore';
-
-  // Subscribe to theme changes
-  $theme.subscribe(theme => {
-    const sections = document.querySelectorAll('section');
-    sections.forEach(section => {
-      section.setAttribute('data-theme', theme);
-    });
-  });
-</script>
-
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
-</style>
